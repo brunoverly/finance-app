@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: FinanceApp
+  datasource:
+    url: jdbc:postgresql://localhost:5432/finance-app
+    username: postgres
+    password: yH7UFQ47
+  jpa:
+    hibernate:
+      ddl-auto: validate
+  web:
+    error:
+      include-stacktrace: never
