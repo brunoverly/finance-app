@@ -12,6 +12,8 @@ import br.com.FinanceApp.repository.UsuarioRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -54,5 +56,17 @@ public class LancamentoService {
                 .toUri();
 
         return ResponseEntity.created(uri).body(mapper.EntityToResponse(lancamento));
+    }
+
+    public Page<LancamentoResponseDto> findAll(Pageable pageable) {
+        Page <Lancamento> lancamentos = lancamentoRepository.findAll(pageable);
+        return lancamentos.map(mapper::EntityToResponse);
+    }
+
+    public ResponseEntity<LancamentoResponseDto> findById(Long id) {
+        Lancamento lancamento = lancamentoRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Lancamento com id {" + id + "} não localizado"));
+
+        return ResponseEntity.ok(mapper.EntityToResponse(lancamento));
     }
 }

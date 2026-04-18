@@ -13,6 +13,8 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -45,5 +47,10 @@ public class CategoriaService {
                 .toUri();
 
         return ResponseEntity.created(uri).body(mapper.EntityToResponse(categoria));
+    }
+
+    public Page<CategoriaResponseDto> findAll(Pageable pageable) {
+        Page<Categoria> categorias = categoriaRepository.findAll(pageable);
+        return categorias.map(mapper::EntityToResponse);
     }
 }
