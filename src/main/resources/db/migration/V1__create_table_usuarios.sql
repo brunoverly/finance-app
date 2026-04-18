@@ -1,7 +1,7 @@
 CREATE TABLE usuarios(
     id BIGSERIAL PRIMARY KEY,
-    nome varchar(250),
-    email varchar(250) UNIQUE,
-    senha varchar(400),
-    role varchar(50)
+    nome VARCHAR(250),
+    email VARCHAR(250) UNIQUE,
+    senha VARCHAR(400),
+    role VARCHAR(50)
 )
