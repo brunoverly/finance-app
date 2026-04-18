@@ -5,7 +5,6 @@ import br.com.FinanceApp.dto.UsuarioRequestDto;
 import br.com.FinanceApp.entity.Usuario;
 import br.com.FinanceApp.mapper.EntityToDtoMapper;
 import br.com.FinanceApp.repository.UsuarioRepository;
-import br.com.FinanceApp.security.TokenService;
 import jakarta.persistence.EntityNotFoundException;
 import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,5 +1,6 @@
 package br.com.FinanceApp.security;
 
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -11,6 +12,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.stereotype.Component;
+import java.time.LocalDateTime;
 
 @Component
 public class FilterChain {
@@ -32,6 +34,26 @@ public class FilterChain {
                         //.requestMatchers("/admin/**").hasRole("ADMIN")
 
                         .anyRequest().authenticated())
+                .exceptionHandling(ex -> ex
+                        .authenticationEntryPoint((request, response, authException) -> {
+                            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                            response.setContentType("application/json;charset=UTF-8");
+                            String body = String.format(
+                                    """
+                                    {
+                                        "timestamp": "%s",
+                                        "status": 401,
+                                        "error": "UNAUTHORIZED",
+                                        "message": "Token ausente ou inválido",
+                                        "path": "%s"   
+                                    }
+                                    """,
+                                    LocalDateTime.now(),request.getRequestURI());
+                            response.getWriter().write(body);
+                        })
+
+
+                )
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }

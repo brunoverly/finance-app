@@ -1,7 +1,5 @@
 package br.com.FinanceApp.dto;
 
-import br.com.FinanceApp.entity.Usuario;
-import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 
 public record CategoriaRequestDto(

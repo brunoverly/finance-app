@@ -1,19 +1,18 @@
 package br.com.FinanceApp.security;
 
 import br.com.FinanceApp.repository.UsuarioRepository;
+import br.com.FinanceApp.service.TokenService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.nio.file.AccessDeniedException;
 
 @Component
 public class SecurityFilter extends OncePerRequestFilter {
@@ -26,20 +25,18 @@ public class SecurityFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, jakarta.servlet.FilterChain filterChain) throws ServletException, IOException {
+            var tokenJwt = getToken(request);
+            if(tokenJwt != null) {
+                var subject = tokenService.getSubject(tokenJwt);
+                var usuario = usuarioRepository.findByEmail(subject);
+                var authentication = new UsernamePasswordAuthenticationToken(
+                        usuario,
+                        null,
+                        usuario.getAuthorities()
+                );
 
-        var tokenJwt = getToken(request);
-
-        if(tokenJwt != null) {
-            var subject = tokenService.getSubject(tokenJwt);
-            var usuario = usuarioRepository.findByEmail(subject);
-            var authentication = new UsernamePasswordAuthenticationToken(
-                    usuario,
-                    null,
-                    usuario.getAuthorities()
-            );
-
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-        }
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+            }
 
         filterChain.doFilter(request, response);
     }

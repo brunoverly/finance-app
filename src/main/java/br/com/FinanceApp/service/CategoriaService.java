@@ -8,14 +8,13 @@ import br.com.FinanceApp.entity.Usuario;
 import br.com.FinanceApp.mapper.EntityToDtoMapper;
 import br.com.FinanceApp.repository.CategoriaRepository;
 import br.com.FinanceApp.repository.UsuarioRepository;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -29,6 +28,7 @@ public class CategoriaService {
     private UsuarioRepository usuarioRepository;
     @Autowired
     private EntityToDtoMapper mapper;
+
 
     public ResponseEntity<CategoriaResponseDto> create(@Valid CategoriaRequestDto dto) {
         Usuario usuario = usuarioRepository.findById(dto.usuarioId())
@@ -50,7 +50,8 @@ public class CategoriaService {
     }
 
     public Page<CategoriaResponseDto> findAll(Pageable pageable) {
-        Page<Categoria> categorias = categoriaRepository.findAll(pageable);
+        Usuario usuario = usuarioRepository.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
+        Page<Categoria> categorias = categoriaRepository.findAllFilteredByUser(pageable, usuario.getId());
         return categorias.map(mapper::EntityToResponse);
     }
 }

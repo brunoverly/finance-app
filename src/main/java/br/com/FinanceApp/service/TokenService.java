@@ -1,4 +1,4 @@
-package br.com.FinanceApp.security;
+package br.com.FinanceApp.service;
 
 import br.com.FinanceApp.entity.Usuario;
 import com.auth0.jwt.JWT;
@@ -43,6 +43,6 @@ public class TokenService {
 
 
     private Instant genExpirationDate() {
-        return LocalDateTime.now().plusHours(2).toInstant(ZoneOffset.of("-03:00"));
+        return LocalDateTime.now().plusHours(24).toInstant(ZoneOffset.of("-03:00"));
     }
 }

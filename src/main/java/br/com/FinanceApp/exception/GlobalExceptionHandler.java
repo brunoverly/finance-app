@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
@@ -16,8 +17,8 @@ import java.util.Map;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(EntityNotFoundException.class)
-    public ResponseEntity<ErrorModel> handleException(Exception ex, HttpServletRequest request) {
-        ErrorModel error = new ErrorModel(
+    public ResponseEntity<ErrorResponse> handleException(Exception ex, HttpServletRequest request) {
+        ErrorResponse error = new ErrorResponse(
                 LocalDateTime.now(),
                 404,
                 "NOT_FOUND",
@@ -29,8 +30,8 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(BadRequestException.class)
-    public ResponseEntity<ErrorModel> handelBadRequest(Exception ex, HttpServletRequest request) {
-        ErrorModel error = new ErrorModel(
+    public ResponseEntity<ErrorResponse> handelBadRequest(Exception ex, HttpServletRequest request) {
+        ErrorResponse error = new ErrorResponse(
                 LocalDateTime.now(),
                 400,
                 "BAD_REQUEST",
@@ -39,6 +40,19 @@ public class GlobalExceptionHandler {
         );
 
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(UnauthorizedAcessException.class)
+    public ResponseEntity<ErrorResponse> handelAcessDenied(UnauthorizedAcessException ex, HttpServletRequest request) {
+        ErrorResponse error = new ErrorResponse(
+                LocalDateTime.now(),
+                401,
+                "UNAUTHORIZED",
+                ex.getMessage(),
+                request.getRequestURI()
+        );
+
+        return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

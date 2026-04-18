@@ -2,7 +2,6 @@ package br.com.FinanceApp.controller;
 
 import br.com.FinanceApp.dto.LancamentoRequestDto;
 import br.com.FinanceApp.dto.LancamentoResponseDto;
-import br.com.FinanceApp.entity.Lancamento;
 import br.com.FinanceApp.service.LancamentoService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
