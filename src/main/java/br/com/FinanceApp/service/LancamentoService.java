@@ -69,4 +69,34 @@ public class LancamentoService {
 
         return ResponseEntity.ok(mapper.EntityToResponse(lancamento));
     }
+
+    public ResponseEntity<LancamentoResponseDto> update(Long id, @Valid LancamentoRequestDto dto) {
+        Lancamento lancamento = lancamentoRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Lançamento com id {" + id + "} não localizado"));
+
+        Categoria categoria = categoriaRepository.findById(dto.categoriaId())
+                        .orElseThrow(() -> new EntityNotFoundException("Categoria com id {" + id + "} não localizada"));
+
+        Usuario usuario = usuarioRepository.findById(dto.usuarioId())
+                .orElseThrow(() -> new EntityNotFoundException("Usuário com id {" + id + "} não localizado"));
+
+        lancamento.setDescricao(dto.descricao());
+        lancamento.setValor(dto.valor());
+        lancamento.setTipo(dto.tipo());
+        lancamento.setUsuario(usuario);
+        lancamento.setCategoria(categoria);
+
+        lancamentoRepository.save(lancamento);
+
+        return ResponseEntity.ok(mapper.EntityToResponse(lancamento));
+    }
+
+    public ResponseEntity delete(Long id) {
+        Lancamento lancamento = lancamentoRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Lançamento com id {" + id + "} não localizado"));
+
+        lancamentoRepository.delete(lancamento);
+
+        return ResponseEntity.noContent().build();
+    }
 }

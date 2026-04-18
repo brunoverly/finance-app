@@ -33,4 +33,14 @@ public class LancamentoController {
     public ResponseEntity<LancamentoResponseDto> findById(@PathVariable Long id) {
         return lancamentoService.findById(id);
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<LancamentoResponseDto> update(@PathVariable Long id, @Valid @RequestBody LancamentoRequestDto dto) {
+        return lancamentoService.update(id, dto);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity delete(@PathVariable Long id) {
+        return lancamentoService.delete(id);
+    }
 }
