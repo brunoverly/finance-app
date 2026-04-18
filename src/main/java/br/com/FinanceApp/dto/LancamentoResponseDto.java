@@ -15,7 +15,7 @@ public record LancamentoResponseDto(
         @Schema(description = "Valor do laçamento", example = "21.22")
         BigDecimal valor,
         @Schema(description = "Data do lançamento", example = "21-04-2026 15:22:26")
-        @JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss")
+        @JsonFormat(pattern = "yyyy-MM-ddTHH:mm:ss")
         LocalDateTime dataLancamento,
         @Schema(description = "RECEITA ou DESPESA", example = "DESPESA")
         TipoLancamento tipo,

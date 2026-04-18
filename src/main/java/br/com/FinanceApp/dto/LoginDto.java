@@ -8,7 +8,7 @@ public record LoginDto(
         @Schema(description = "Email do usuário", example = "bruno@email.com")
         @Email(message = "Campo obrigatório")
         String email,
-        @Schema(description = "Senha do usuário", example = "158463@4596%sanoel")
+        @Schema(description = "Senha do usuário", example = "123")
         @NotBlank(message = "Campo obrigatório")
         String senha
 ) {

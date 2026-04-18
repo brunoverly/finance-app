@@ -33,7 +33,7 @@ public class AuthController {
                     responseCode = "201",
                     description = "Criado",
                     content = @Content(
-                            mediaType = "aplication/json",
+                            mediaType = "application/json",
                             schema = @Schema(implementation = AuthResponseDto.class)
                     )
             ),
@@ -41,7 +41,7 @@ public class AuthController {
                     responseCode = "400",
                     description = "Dados inválidos",
                     content = @Content(
-                            mediaType = "aplication/json",
+                            mediaType = "application/json",
                             schema = @Schema(implementation = ErrorResponse.class)
                     )
 
@@ -50,7 +50,7 @@ public class AuthController {
                     responseCode = "409",
                     description = "Email já cadastrado",
                     content = @Content(
-                            mediaType = "aplication/json",
+                            mediaType = "application/json",
                             schema = @Schema(implementation = ErrorResponse.class)
                     )
             )
@@ -70,7 +70,7 @@ public class AuthController {
                     responseCode = "200",
                     description = "Autenticado",
                     content = @Content(
-                            mediaType = "aplication/json",
+                            mediaType = "application/json",
                             schema = @Schema(implementation = AuthResponseDto.class)
                     )
             ),
@@ -78,7 +78,7 @@ public class AuthController {
                     responseCode = "400",
                     description = "Dados inválidos",
                     content = @Content(
-                            mediaType = "aplication/json",
+                            mediaType = "application/json",
                             schema = @Schema(implementation = ErrorResponse.class)
                     )
 

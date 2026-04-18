@@ -5,14 +5,14 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDateTime;
 
 public record ErrorResponse(
-        @Schema(description = "Carimbo", example = "21-04-2026 15:22:26")
-        @JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss")
+        @Schema(description = "Carimbo", example = "2026-04-21T15:22:26")
+        @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
         LocalDateTime timestamp,
-        @Schema(description = "Código do erro", example = "403")
+        @Schema(description = "Código do erro", example = "400")
         int status,
-        @Schema(description = "Tipo de erro", example = "FORBIDDEN")
+        @Schema(description = "Tipo de erro", example = "BAD_REQUEST")
         String error,
-        @Schema(description = "Mensagem do erro", example = "Usuário não possui acesso a este recurso")
+        @Schema(description = "Mensagem do erro", example = "Ocorreu um erro na requisição")
         String message,
         @Schema(description = "Caminho da requisição", example = "/lancamentos/1")
         String path

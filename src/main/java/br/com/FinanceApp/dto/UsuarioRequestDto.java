@@ -1,6 +1,5 @@
 package br.com.FinanceApp.dto;
 
-import br.com.FinanceApp.entity.UsuarioRole;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -12,10 +11,10 @@ public record UsuarioRequestDto(
         @Schema(description = "Email do usuário", example = "bruno@email.com")
         @Email(message = "Campo obrigatório")
         String email,
-        @Schema(description = "Senha do usuário", example = "158463@4596%sanoel")
+        @Schema(description = "Senha do usuário", example = "123")
         @NotBlank(message = "Campo obrigatório")
         String senha,
-        @Schema(description = "Confirmação de senha", example = "158463@4596%sanoel")
+        @Schema(description = "Confirmação de senha", example = "123")
         @NotBlank(message = "Campo obrigatório")
         String confirmarSenha) {
 }

@@ -4,6 +4,7 @@ import br.com.FinanceApp.dto.AuthResponseDto;
 import br.com.FinanceApp.dto.LoginDto;
 import br.com.FinanceApp.dto.UsuarioRequestDto;
 import br.com.FinanceApp.entity.Usuario;
+import br.com.FinanceApp.exception.EmailNotUniqueException;
 import br.com.FinanceApp.mapper.EntityToDtoMapper;
 import br.com.FinanceApp.repository.UsuarioRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -32,6 +33,10 @@ public class AuthService {
         if(!dto.senha().equals(dto.senha())) {
             throw new BadRequestException("Senhas informadas não conferem");
         }
+        if(usuarioRepository.existsByEmail(dto.email())) {
+            throw new EmailNotUniqueException("Email {"+ dto.email() +"} já em uso");
+        }
+
         Usuario usuario = mapper.RequestToEntity(dto);
         usuario.setSenha(passwordEncoder.encode(dto.senha()));
 
