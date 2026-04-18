@@ -5,13 +5,13 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 
 public record UsuarioRequestDto(
-        @NotBlank
+        @NotBlank(message = "Campo obrigatório")
         String nome,
-        @Email
+        @Email(message = "Campo obrigatório")
         String email,
-        @NotBlank
+        @NotBlank(message = "Campo obrigatório")
         String senha,
-        @NotBlank
+        @NotBlank(message = "Campo obrigatório")
         String confirmarSenha,
         UsuarioRole role
 ) {

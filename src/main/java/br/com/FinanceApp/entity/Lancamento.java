@@ -19,15 +19,15 @@ public class Lancamento {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    String descricao;
-    BigDecimal valor;
-    LocalDateTime dataLancamento;
+    private String descricao;
+    private BigDecimal valor;
+    private LocalDateTime dataLancamento;
     @Enumerated(EnumType.STRING)
-    TipoLancamento tipo;
+    private TipoLancamento tipo;
     @ManyToOne(fetch = FetchType.LAZY)
-    Categoria categoria;
+    private Categoria categoria;
     @ManyToOne(fetch = FetchType.LAZY)
-    Usuario usuario;
+    private Usuario usuario;
 
 
     @PrePersist
