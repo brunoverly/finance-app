@@ -11,3 +11,14 @@ spring:
   web:
     error:
       include-stacktrace: never
+
+keys:
+  secret: ${SECRET:G7kL9pX2vR5tY1QzF8bN3cH6WmD0aS4uJ2eT9KxP5rV8yM1qZ6nC3hL7wB4dF0sA}
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    operations-sorter: alpha
+    tags-sorter: alpha
+    try-it-out-enabled: true

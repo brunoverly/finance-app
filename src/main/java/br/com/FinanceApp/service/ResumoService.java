@@ -1,9 +1,7 @@
 package br.com.FinanceApp.service;
 
 
-import br.com.FinanceApp.controller.ResmoController;
-import br.com.FinanceApp.dto.ResumoResponseDto;
-import br.com.FinanceApp.entity.Lancamento;
+import br.com.FinanceApp.dto.ResumoMensalDto;
 import br.com.FinanceApp.entity.TipoLancamento;
 import br.com.FinanceApp.entity.Usuario;
 import br.com.FinanceApp.repository.LancamentoRepository;
@@ -12,10 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-
 import java.math.BigDecimal;
-import java.sql.SQLOutput;
-import java.util.List;
 
 @Service
 public class ResumoService {
@@ -26,19 +21,12 @@ public class ResumoService {
 
 
 
-    public ResponseEntity<ResumoResponseDto> getResumo() {
-        BigDecimal receita = BigDecimal.ZERO;
-        BigDecimal despesa = BigDecimal.ZERO;
-
+    public ResponseEntity<ResumoMensalDto> getResumo() {
         Usuario usuario = usuarioRepository.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
-        List<Lancamento> lancamentos = lancamentoRepository.findAllFilteredByUser(usuario.getId());
-        for (Lancamento lancamento : lancamentos) {
-            if(lancamento.getTipo().equals(TipoLancamento.RECEITA)) receita = receita.add(lancamento.getValor());
-            if(lancamento.getTipo().equals(TipoLancamento.DESPESA)) despesa = despesa.add(lancamento.getValor());
-        }
-
+        BigDecimal receita = lancamentoRepository.sumLancamentoByUsuario(usuario.getId(), TipoLancamento.RECEITA).orElse(BigDecimal.ZERO);
+        BigDecimal despesa = lancamentoRepository.sumLancamentoByUsuario(usuario.getId(), TipoLancamento.DESPESA).orElse(BigDecimal.ZERO);
         BigDecimal saldo = receita.subtract(despesa);
-        ResumoResponseDto resumo = new ResumoResponseDto(receita, despesa, saldo);
+        ResumoMensalDto resumo = new ResumoMensalDto(receita, despesa, saldo);
 
         return ResponseEntity.ok(resumo);
     }

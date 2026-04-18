@@ -37,9 +37,6 @@ public class LancamentoService {
 
     public ResponseEntity<LancamentoResponseDto> create(@Valid LancamentoRequestDto dto) {
         Usuario usuario = usuarioRepository.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
-        if(dto.usuarioId() != usuario.getId()) {
-            throw new UnauthorizedAcessException("Usuário informado na request diverge do usuário que esta enviando a requisição");
-        }
 
         Categoria categoria = categoriaRepository.findById(dto.categoriaId()).
                 orElseThrow(() -> new EntityNotFoundException("Categoria com id{" + dto.categoriaId() + "} não localizado"));
@@ -84,11 +81,13 @@ public class LancamentoService {
 
     public ResponseEntity<LancamentoResponseDto> update(Long id, @Valid LancamentoRequestDto dto) {
         Usuario usuario = usuarioRepository.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
-        if(dto.usuarioId() != usuario.getId()) {
-            throw new UnauthorizedAcessException("Usuário informado na request diverge do usuário que esta enviando a requisição");
-        }
+
         Lancamento lancamento = lancamentoRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Lançamento com id {" + id + "} não localizado"));
+
+        if(lancamento.getUsuario().getId() != usuario.getId()) {
+            throw new UnauthorizedAcessException("Usuário autenticado não possui permissão para acessar este recurso");
+        }
 
         Categoria categoria = categoriaRepository.findById(dto.categoriaId())
                         .orElseThrow(() -> new EntityNotFoundException("Categoria com id {" + id + "} não localizada"));

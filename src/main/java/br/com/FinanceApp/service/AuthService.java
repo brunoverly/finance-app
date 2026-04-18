@@ -1,5 +1,6 @@
 package br.com.FinanceApp.service;
 
+import br.com.FinanceApp.dto.AuthResponseDto;
 import br.com.FinanceApp.dto.LoginDto;
 import br.com.FinanceApp.dto.UsuarioRequestDto;
 import br.com.FinanceApp.entity.Usuario;
@@ -13,7 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
-public class UsuarioService {
+public class AuthService {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
@@ -24,10 +25,10 @@ public class UsuarioService {
     private EntityToDtoMapper mapper;
 
     @Autowired
-    private TokenService tokenService;
+    private JwtService tokenService;
 
 
-    public ResponseEntity<String> create(UsuarioRequestDto dto) throws BadRequestException {
+    public ResponseEntity<AuthResponseDto> create(UsuarioRequestDto dto) throws BadRequestException {
         if(!dto.senha().equals(dto.senha())) {
             throw new BadRequestException("Senhas informadas não conferem");
         }
@@ -36,10 +37,11 @@ public class UsuarioService {
 
         usuarioRepository.save(usuario);
 
-        return ResponseEntity.ok().body(tokenService.generateToken(usuario));
+        AuthResponseDto auth = new  AuthResponseDto(usuario.getNome(), tokenService.generateToken(usuario));
+        return ResponseEntity.ok().body(auth);
     }
 
-    public ResponseEntity<String> login(LoginDto dto) throws Exception {
+    public ResponseEntity<AuthResponseDto> login(LoginDto dto) throws Exception {
         Usuario usuario = usuarioRepository.findByEmail(dto.email());
         if(usuario == null) {
             throw new EntityNotFoundException("Email não localizado no banco de dados");
@@ -47,7 +49,9 @@ public class UsuarioService {
         if(!passwordEncoder.matches(dto.senha(), usuario.getSenha())) {
             throw new BadRequestException("Senha incorreta!");
         }
-        return ResponseEntity.ok().body(tokenService.generateToken(usuario));
+
+        AuthResponseDto auth = new  AuthResponseDto(usuario.getNome(), tokenService.generateToken(usuario));
+        return ResponseEntity.ok().body(auth);
 
 
     }

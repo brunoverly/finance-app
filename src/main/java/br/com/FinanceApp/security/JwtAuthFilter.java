@@ -1,7 +1,7 @@
 package br.com.FinanceApp.security;
 
 import br.com.FinanceApp.repository.UsuarioRepository;
-import br.com.FinanceApp.service.TokenService;
+import br.com.FinanceApp.service.JwtService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -12,13 +12,12 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.nio.file.AccessDeniedException;
 
 @Component
-public class SecurityFilter extends OncePerRequestFilter {
+public class JwtAuthFilter extends OncePerRequestFilter {
 
     @Autowired
-    private TokenService tokenService;
+    private JwtService tokenService;
 
     @Autowired
     private UsuarioRepository usuarioRepository;

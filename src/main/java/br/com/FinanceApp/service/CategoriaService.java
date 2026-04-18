@@ -8,7 +8,6 @@ import br.com.FinanceApp.entity.Usuario;
 import br.com.FinanceApp.mapper.EntityToDtoMapper;
 import br.com.FinanceApp.repository.CategoriaRepository;
 import br.com.FinanceApp.repository.UsuarioRepository;
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -31,8 +30,7 @@ public class CategoriaService {
 
 
     public ResponseEntity<CategoriaResponseDto> create(@Valid CategoriaRequestDto dto) {
-        Usuario usuario = usuarioRepository.findById(dto.usuarioId())
-                .orElseThrow(() -> new EntityNotFoundException("Usuário com id {" + dto.usuarioId() + " não localizado"));
+        Usuario usuario = usuarioRepository.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
 
         Categoria categoria = Categoria.builder()
                 .nome(dto.nome())

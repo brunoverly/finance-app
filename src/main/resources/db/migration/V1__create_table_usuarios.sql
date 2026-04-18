@@ -3,5 +3,5 @@ CREATE TABLE usuarios(
     nome VARCHAR(250),
     email VARCHAR(250) UNIQUE,
     senha VARCHAR(400),
-    role VARCHAR(50)
+    role VARCHAR(20)
 )
