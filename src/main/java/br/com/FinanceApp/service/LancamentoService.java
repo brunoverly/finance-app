@@ -5,6 +5,7 @@ import br.com.FinanceApp.dto.LancamentoResponseDto;
 import br.com.FinanceApp.entity.Categoria;
 import br.com.FinanceApp.entity.Lancamento;
 import br.com.FinanceApp.entity.Usuario;
+import br.com.FinanceApp.exception.UnauthorizedAcessException;
 import br.com.FinanceApp.mapper.EntityToDtoMapper;
 import br.com.FinanceApp.repository.CategoriaRepository;
 import br.com.FinanceApp.repository.LancamentoRepository;
@@ -15,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -34,11 +36,17 @@ public class LancamentoService {
     private EntityToDtoMapper mapper;
 
     public ResponseEntity<LancamentoResponseDto> create(@Valid LancamentoRequestDto dto) {
-        Usuario usuario = usuarioRepository.findById(dto.usuarioId()).
-                orElseThrow(() -> new EntityNotFoundException("Usuário com id{" + dto.usuarioId() + "} não localizado"));
+        Usuario usuario = usuarioRepository.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
+        if(dto.usuarioId() != usuario.getId()) {
+            throw new UnauthorizedAcessException("Usuário informado na request diverge do usuário que esta enviando a requisição");
+        }
 
-        Categoria categoria = categoriaRepository.findById(dto.usuarioId()).
+        Categoria categoria = categoriaRepository.findById(dto.categoriaId()).
                 orElseThrow(() -> new EntityNotFoundException("Categoria com id{" + dto.categoriaId() + "} não localizado"));
+
+        if(categoria.getUsuario().getId() != usuario.getId()) {
+            throw new UnauthorizedAcessException("Categoria informada na requisição não pertence ao usuário autenticado");
+        }
 
         Lancamento lancamento = Lancamento.builder()
                 .descricao(dto.descricao())
@@ -59,26 +67,31 @@ public class LancamentoService {
     }
 
     public Page<LancamentoResponseDto> findAll(Pageable pageable) {
-        Page <Lancamento> lancamentos = lancamentoRepository.findAll(pageable);
+        Usuario usuario = usuarioRepository.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
+        Page <Lancamento> lancamentos = lancamentoRepository.findAllFilteredByUser(pageable, usuario.getId());
         return lancamentos.map(mapper::EntityToResponse);
     }
 
     public ResponseEntity<LancamentoResponseDto> findById(Long id) {
+        Usuario usuario = usuarioRepository.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
         Lancamento lancamento = lancamentoRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Lancamento com id {" + id + "} não localizado"));
-
+        if(lancamento.getUsuario().getId() != usuario.getId()) {
+            throw new UnauthorizedAcessException("Usuário autenticado não possui permissão para acessar este recurso");
+        }
         return ResponseEntity.ok(mapper.EntityToResponse(lancamento));
     }
 
     public ResponseEntity<LancamentoResponseDto> update(Long id, @Valid LancamentoRequestDto dto) {
+        Usuario usuario = usuarioRepository.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
+        if(dto.usuarioId() != usuario.getId()) {
+            throw new UnauthorizedAcessException("Usuário informado na request diverge do usuário que esta enviando a requisição");
+        }
         Lancamento lancamento = lancamentoRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Lançamento com id {" + id + "} não localizado"));
 
         Categoria categoria = categoriaRepository.findById(dto.categoriaId())
                         .orElseThrow(() -> new EntityNotFoundException("Categoria com id {" + id + "} não localizada"));
-
-        Usuario usuario = usuarioRepository.findById(dto.usuarioId())
-                .orElseThrow(() -> new EntityNotFoundException("Usuário com id {" + id + "} não localizado"));
 
         lancamento.setDescricao(dto.descricao());
         lancamento.setValor(dto.valor());
@@ -92,9 +105,15 @@ public class LancamentoService {
     }
 
     public ResponseEntity delete(Long id) {
+
+        Usuario usuario = usuarioRepository.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
+
         Lancamento lancamento = lancamentoRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Lançamento com id {" + id + "} não localizado"));
 
+        if(lancamento.getUsuario().getId() != usuario.getId()) {
+            throw new UnauthorizedAcessException("Usuário autenticado não possui permissão para acessar este recurso");
+        }
         lancamentoRepository.delete(lancamento);
 
         return ResponseEntity.noContent().build();

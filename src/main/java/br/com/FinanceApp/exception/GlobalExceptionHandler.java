@@ -46,13 +46,13 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handelAcessDenied(UnauthorizedAcessException ex, HttpServletRequest request) {
         ErrorResponse error = new ErrorResponse(
                 LocalDateTime.now(),
-                401,
-                "UNAUTHORIZED",
+                403,
+                "FORBIDDEN",
                 ex.getMessage(),
                 request.getRequestURI()
         );
 
-        return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
+        return new ResponseEntity<>(error, HttpStatus.FORBIDDEN);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
