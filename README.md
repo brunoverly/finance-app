@@ -14,7 +14,7 @@
 
 ---
 
-> **Projeto para praticar conceitos de Spring Security e autenticação com JWT (JSON Web Token).**
+> **API para praticar conceitos de Spring Security e autenticação com JWT (JSON Web Token).**
 
 🚧 **Projeto ainda em andamento** 🚧
 
